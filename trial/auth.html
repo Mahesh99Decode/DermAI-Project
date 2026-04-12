@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DermAI Auth</title>
+  <style>
+
+ body {
+  font-family: Arial, sans-serif;
+
+  background:
+    linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+    url("https://images.unsplash.com/photo-1588776814546-1ffcf47267a5"), /* dermatology clinic */
+    url("https://images.unsplash.com/photo-1606813907291-d86efa9b94db"); /* skin care / dermatology */
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+    .auth-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+    }
+
+    /* Toggle buttons */
+    .toggle button {
+      margin: 5px;
+      padding: 6px 12px;
+      border: none;
+      background: #eee;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .toggle .active {
+      background: #2a9d8f;
+      color: white;
+    }
+
+    /* Inputs */
+    input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      padding: 10px;
+      background: #2a9d8f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Switch link */
+    .switch {
+      margin-top: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #2a9d8f;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="auth-box">
+
+  <!-- Role -->
+  <div class="toggle">
+    <button id="userBtn" class="active" onclick="setRole('User')">User</button>
+    <button id="doctorBtn" onclick="setRole('Doctor')">Doctor</button>
+  </div>
+
+  <!-- Title -->
+  <h2 id="title">User Login</h2>
+
+  <!-- Form -->
+  <form onsubmit="handleSubmit(event)">
+    <input type="text" placeholder="Email" required>
+    <input type="password" placeholder="Password" required>
+
+    <button class="submit-btn" id="submitBtn">Login</button>
+  </form>
+
+  <!-- Switch -->
+  <p class="switch" onclick="toggleMode()" id="switchText">
+    Don't have an account? Create Account
+  </p>
+
+</div>
+
+<script>
+
+let role = "User";
+let mode = "login";
+
+// Switch User / Doctor
+function setRole(r) {
+  role = r;
+
+  document.getElementById("userBtn").classList.remove("active");
+  document.getElementById("doctorBtn").classList.remove("active");
+
+  if (r === "User") {
+    document.getElementById("userBtn").classList.add("active");
+  } else {
+    document.getElementById("doctorBtn").classList.add("active");
+  }
+
+  updateUI();
+}
+
+// Toggle Login / Signup
+function toggleMode() {
+  mode = mode === "login" ? "signup" : "login";
+  updateUI();
+}
+
+// Update UI text
+function updateUI() {
+  document.getElementById("title").innerText =
+    role + " " + (mode === "login" ? "Login" : "Signup");
+
+  document.getElementById("submitBtn").innerText =
+    mode === "login" ? "Login" : "Create Account";
+
+  document.getElementById("switchText").innerText =
+    mode === "login"
+      ? "Don't have an account? Create Account"
+      : "Already have an account? Login";
+}
+
+// Submit
+function handleSubmit(e) {
+  e.preventDefault();
+  alert(role + " " + mode + " successful!");
+}
+
+</script>
+
+</body>
+</html>
