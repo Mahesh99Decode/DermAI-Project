@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DermAI - Doctor Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/doctor.css">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="logo">
+      <i class="fa-solid fa-leaf"></i> DermAI <span>Pro</span>
+    </div>
+    
+    <div class="profile-section">
+      <div class="user-profile">
+        <img src="https://ui-avatars.com/api/?name=Dr+Smith&background=10b981&color=fff" alt="Doctor Profile" class="avatar">
+        <div class="user-info">
+          <span class="user-name">Dr. Sarah Smith</span>
+          <span class="user-role">Dermatologist</span>
+        </div>
+      </div>
+      <button onclick="logout()" class="logout-btn">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <main class="dashboard-container">
+    <div class="header-banner">
+      <div>
+        <h1>Welcome back, Dr. Smith!</h1>
+        <p>Here is your daily overview for today.</p>
+      </div>
+      <div class="date-badge">
+        <i class="fa-regular fa-calendar-check"></i> <span id="currentDate">Today</span>
+      </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="color: #0ea5e9; background: rgba(14, 165, 233, 0.1);">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <h3>Total Patients</h3>
+          <h2>1,248</h2>
+          <p class="trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +12% this month</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+        <div class="stat-content">
+          <h3>Appointments Today</h3>
+          <h2>8</h2>
+          <p class="trend">3 remaining</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">
+          <i class="fa-solid fa-wallet"></i>
+        </div>
+        <div class="stat-content">
+          <h3>Monthly Revenue</h3>
+          <h2>$12,450</h2>
+          <p class="trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +4.5% compared to last month</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <!-- Appointments Table -->
+      <section class="card lg-card">
+        <div class="card-header">
+          <h2>Upcoming Appointments</h2>
+          <button class="view-all-btn">View Schedule <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="appointments-table">
+            <thead>
+              <tr>
+                <th>Patient Name</th>
+                <th>Time</th>
+                <th>AI Pre-Diagnosis</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="patient-cell">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=cbd5e1" class="patient-avatar">
+                    <div class="patient-info">
+                      <span class="patient-name">John Doe</span>
+                      <span class="patient-id">ID: #4812</span>
+                    </div>
+                  </div>
+                </td>
+                <td>10:00 AM</td>
+                <td><span class="badge warning-badge">Eczema Suspected</span></td>
+                <td><span class="status pending">Waiting</span></td>
+                <td>
+                  <button class="action-btn join-btn" onclick="startConsultation()"><i class="fa-solid fa-video"></i> Start</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="patient-cell">
+                    <img src="https://ui-avatars.com/api/?name=Emma+Wilson&background=cbd5e1" class="patient-avatar">
+                    <div class="patient-info">
+                      <span class="patient-name">Emma Wilson</span>
+                      <span class="patient-id">ID: #4899</span>
+                    </div>
+                  </div>
+                </td>
+                <td>11:30 AM</td>
+                <td><span class="badge danger-badge">Melanoma High Risk</span></td>
+                <td><span class="status upcoming">Upcoming</span></td>
+                <td>
+                  <button class="action-btn view-btn"><i class="fa-solid fa-file-medical"></i> Details</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="patient-cell">
+                    <img src="https://ui-avatars.com/api/?name=Michael+Brown&background=cbd5e1" class="patient-avatar">
+                    <div class="patient-info">
+                      <span class="patient-name">Michael Brown</span>
+                      <span class="patient-id">ID: #5011</span>
+                    </div>
+                  </div>
+                </td>
+                <td>2:15 PM</td>
+                <td><span class="badge safe-badge">Psoriasis Checkup</span></td>
+                <td><span class="status upcoming">Upcoming</span></td>
+                <td>
+                  <button class="action-btn view-btn"><i class="fa-solid fa-file-medical"></i> Details</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Revenue / Notes Side Card -->
+      <section class="card sm-card">
+        <div class="card-header">
+          <h2>Revenue Breakdown</h2>
+        </div>
+        <div class="chart-container">
+          <!-- Dummy Chart representation -->
+          <div class="bar-chart">
+            <div class="bar-wrapper"><div class="bar" style="height: 60%;"></div><span>Mon</span></div>
+            <div class="bar-wrapper"><div class="bar" style="height: 80%;"></div><span>Tue</span></div>
+            <div class="bar-wrapper"><div class="bar" style="height: 40%;"></div><span>Wed</span></div>
+            <div class="bar-wrapper"><div class="bar" style="height: 90%; background: var(--primary);"></div><span>Thu</span></div>
+            <div class="bar-wrapper"><div class="bar" style="height: 70%;"></div><span>Fri</span></div>
+          </div>
+        </div>
+        
+        <div class="recent-transactions">
+          <h3>Recent Transactions</h3>
+          <ul class="transaction-list">
+            <li>
+              <div class="txn-info">
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px;">
+                  <i class="fa-solid fa-credit-card" style="color: #10b981;"></i>
+                </div>
+                <div>
+                  <p>Consultation - J. Doe</p>
+                  <span>Today, 9:24 AM</span>
+                </div>
+              </div>
+              <div class="txn-amount">+$150.00</div>
+            </li>
+            <li>
+              <div class="txn-info">
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px;">
+                  <i class="fa-solid fa-credit-card" style="color: #10b981;"></i>
+                </div>
+                <div>
+                  <p>Prescription Refill</p>
+                  <span>Yesterday</span>
+                </div>
+              </div>
+              <div class="txn-amount">+$45.00</div>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../js/doctor.js"></script>
+</body>
+</html>

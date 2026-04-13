@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DermAI - Dashboard</title>
+  <!-- Google Fonts for Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="logo">
+      <i class="fa-solid fa-leaf"></i> DermAI
+    </div>
+    
+    <!-- Added Profile Section in Top Corner -->
+    <div class="profile-section">
+      <div class="user-profile">
+        <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=0ea5e9&color=fff" alt="User Profile" class="avatar">
+        <div class="user-info">
+          <span class="user-name">Jane Doe</span>
+          <span class="user-role">Patient</span>
+        </div>
+      </div>
+      <button onclick="logout()" class="logout-btn">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="dashboard-container">
+    <div class="dashboard-header">
+      <h1>AI Skin Analysis Platform</h1>
+      <p>Upload an image for instant AI-powered dermatological insights.</p>
+    </div>
+
+    <div class="dashboard-grid">
+      
+      <!-- AI Analysis Section -->
+      <section class="card analysis-card">
+        <div class="card-header">
+          <div class="icon-wrapper">
+            <i class="fa-solid fa-microscope"></i>
+          </div>
+          <h2>Analyze Condition</h2>
+        </div>
+        <p class="card-subtitle">Upload an image of the affected area for instant AI detection.</p>
+        
+        <div class="upload-zone" id="uploadZone">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <p>Drag & drop your image here or <span>browse files</span></p>
+          <input type="file" id="imageInput" accept="image/*" class="file-input">
+        </div>
+        <div id="imagePreview" class="image-preview hidden">
+            <img id="previewImg" src="" alt="Selected Preview">
+            <button id="removeImageBtn" class="icon-btn" title="Remove image">
+              <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+
+        <div class="input-group">
+          <label for="description">Additional Details</label>
+          <textarea id="description" placeholder="Describe your symptoms, duration, context..."></textarea>
+        </div>
+
+        <button onclick="analyze()" class="btn-primary">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Image
+        </button>
+      </section>
+
+      <!-- History Section -->
+      <section class="card history-card">
+        <div class="card-header">
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)); color: #3b82f6;">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h2>Analysis History</h2>
+        </div>
+        <p class="card-subtitle">Your latest scans and their results.</p>
+        
+        <div class="history-list-wrapper">
+          <ul id="historyList" class="history-list">
+            <li class="empty-state">
+              <i class="fa-solid fa-folder-open"></i>
+              <span>No history yet</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="../js/dashboard.js"></script>
+  <script>
+    // Additional JS for fluid UI interactions like file drop zone and preview
+    const uploadZone = document.getElementById('uploadZone');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeImageBtn = document.getElementById('removeImageBtn');
+
+    uploadZone.addEventListener('click', () => {
+      imageInput.click();
+    });
+
+    imageInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+          uploadZone.classList.add('hidden');
+          imagePreview.classList.remove('hidden');
+        }
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+
+    removeImageBtn.addEventListener('click', () => {
+      imageInput.value = '';
+      previewImg.src = '';
+      uploadZone.classList.remove('hidden');
+      imagePreview.classList.add('hidden');
+    });
+
+    // Drag and Drop Handling
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+      uploadZone.classList.add('highlight');
+    }
+
+    function unhighlight(e) {
+      uploadZone.classList.remove('highlight');
+    }
+
+    uploadZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+      let dt = e.dataTransfer;
+      let files = dt.files;
+      imageInput.files = files;
+      
+      const event = new Event('change', { bubbles: true });
+      imageInput.dispatchEvent(event);
+    }
+  </script>
+</body>
+</html>
