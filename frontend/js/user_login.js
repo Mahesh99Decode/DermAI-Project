@@ -4,13 +4,31 @@ function handleLogin(e) {
   const email = e.target.querySelector('input[type="email"]').value;
   const password = e.target.querySelector('input[type="password"]').value;
 
-  // Dummy check for user credentials
-  if (email === "user@gmail.com" && password === "pass123") {
-    // Extract a mock name or get it from email
-    const name = "Alex User";
-    localStorage.setItem("dermAI_userName", name);
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Invalid credentials.\n\nHint: Try\nEmail: user@test.com\nPassword: pass123");
-  }
+  fetch("http://localhost:5000/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+
+      // ✅ Check user role
+      if (data.success && data.user.role === "user") {
+
+        localStorage.setItem("dermAI_userName", data.user.name);
+        localStorage.setItem("role", "user");
+
+        window.location.href = "dashboard.html";
+
+      } else {
+        alert("Invalid User credentials ❌");
+      }
+
+    })
+    .catch(err => {
+      console.log(err);
+      alert("Server error ❌");
+    });
 }
