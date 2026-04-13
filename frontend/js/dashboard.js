@@ -1,7 +1,17 @@
 function logout() {
-  // Clear any auth tokens if needed in the future
+  localStorage.removeItem("dermAI_userName");
   window.location.href = "index.html";
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const storedName = localStorage.getItem("dermAI_userName");
+    if (storedName) {
+        const profileName = document.getElementById("profileNameDisplay");
+        const welcomeMessage = document.getElementById("welcomeMessageDisplay");
+        if (profileName) profileName.innerText = storedName;
+        if (welcomeMessage) welcomeMessage.innerText = "Welcome, " + storedName + "!";
+    }
+});
 
 // AI ANALYSIS
 function analyze() {
