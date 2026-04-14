@@ -11,8 +11,8 @@ CREATE TABLE users (
 );
 INSERT INTO users (name, email, password, role)
 VALUES 
-('Mahesh', 'user@gmail.com', '1234', 'user'),
-('Dr Smith', 'doctor@gmail.com', '1234', 'doctor');
+('Mahesh', 'user@gmail.com', '123456', 'user'),
+('Dr Smith', 'doctor@gmail.com', '123456', 'doctor');
 
 -- DOCTORS
 CREATE TABLE doctors (
@@ -22,6 +22,7 @@ CREATE TABLE doctors (
   specialization VARCHAR(100)
 );
 INSERT INTO doctors (name, email, specialization)
+
 VALUES ('Dr Smith', 'doctor@gmail.com', 'MBBS');
 
 -- REPORTS

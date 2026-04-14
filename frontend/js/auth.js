@@ -19,6 +19,17 @@ const submitBtn = document.getElementById("submitBtn");
 const switchText = document.getElementById("switchText");
 const form = document.getElementById("authForm");
 
+// Email validation function
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+// Password validation function
+const validatePassword = (password) => {
+  return password && password.length >= 6;
+};
+
 // ROLE SWITCH
 userBtn.addEventListener("click", () => setRole("User"));
 doctorBtn.addEventListener("click", () => setRole("Doctor"));
@@ -61,8 +72,20 @@ function updateUI() {
 form.addEventListener("submit", function(e) {
   e.preventDefault();
 
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+
+  // Validate email format
+  if (!email || !validateEmail(email)) {
+    alert("Please enter a valid email address ❌");
+    return;
+  }
+
+  // Validate password
+  if (!validatePassword(password)) {
+    alert("Password must be at least 6 characters ❌");
+    return;
+  }
 
   if (mode === "login") {
     // LOGIN API
@@ -81,19 +104,30 @@ form.addEventListener("submit", function(e) {
 
   } else {
     // REGISTER API
+    const nameInput = document.getElementById("name")?.value.trim();
+    if (!nameInput) {
+      alert("Name is required ❌");
+      return;
+    }
+
     fetch("http://localhost:5000/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        name: "User",
+        name: nameInput,
         email,
         password,
         role: role.toLowerCase()
       })
     })
     .then(res => res.text())
-    .then(data => alert(data));
+    .then(data => {
+      alert(data);
+      if (data.includes("successfully")) {
+        window.location.href = "dashboard.html";
+      }
+    });
   }
 });

@@ -1,10 +1,35 @@
 function handleSignup(e) {
   e.preventDefault();
 
-  const name = document.getElementById('signupName').value;
-  const email = document.getElementById('signupEmail').value;
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
   const password = document.getElementById('signupPassword').value;
-  const specialization = document.getElementById('signupSpecialization').value;
+  const specialization = document.getElementById('signupSpecialization').value.trim();
+
+  // Validate name
+  if (!name) {
+    alert("Name is required ❌");
+    return;
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    alert("Please enter a valid email address ❌");
+    return;
+  }
+
+  // Validate password
+  if (!password || password.length < 6) {
+    alert("Password must be at least 6 characters ❌");
+    return;
+  }
+
+  // Validate specialization
+  if (!specialization) {
+    alert("Specialization is required ❌");
+    return;
+  }
 
   fetch("http://localhost:5000/api/register", {
     method: "POST",
