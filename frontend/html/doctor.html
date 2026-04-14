@@ -72,7 +72,7 @@
         </div>
         <div class="stat-content">
           <h3>Monthly Revenue</h3>
-          <h2>$12,450</h2>
+          <h2>₹ 1,24,500</h2>
           <p class="trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +4.5% compared to last month</p>
         </div>
       </div>
@@ -91,8 +91,9 @@
             <thead>
               <tr>
                 <th>Patient Name</th>
-                <th>Time</th>
-                <th>AI Pre-Diagnosis</th>
+                <th>Date & Time</th>
+                <th>Type & Mode</th>
+                <th>AI Pre-Diagnosis / Reason</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -101,15 +102,25 @@
               <tr>
                 <td>
                   <div class="patient-cell">
-                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=cbd5e1" class="patient-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=cbd5e1" class="patient-avatar">
                     <div class="patient-info">
-                      <span class="patient-name">John Doe</span>
+                      <span class="patient-name">Jane Doe</span>
                       <span class="patient-id">ID: #4812</span>
                     </div>
                   </div>
                 </td>
-                <td>10:00 AM</td>
-                <td><span class="badge warning-badge">Eczema Suspected</span></td>
+                <td>
+                  <div style="font-weight: 500;">Today</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">10:00 AM</div>
+                </td>
+                <td>
+                  <div style="font-weight: 500;">General Dermatology</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-video"></i> Video Call</div>
+                </td>
+                <td>
+                  <span class="badge warning-badge" style="margin-bottom:0.3rem; display:inline-block;">Eczema Suspected</span>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);">Itching and redness on arm</div>
+                </td>
                 <td><span class="status pending">Waiting</span></td>
                 <td>
                   <button class="action-btn join-btn" onclick="startConsultation()"><i class="fa-solid fa-video"></i> Start</button>
@@ -125,8 +136,18 @@
                     </div>
                   </div>
                 </td>
-                <td>11:30 AM</td>
-                <td><span class="badge danger-badge">Melanoma High Risk</span></td>
+                <td>
+                  <div style="font-weight: 500;">Today</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">12:00 PM</div>
+                </td>
+                <td>
+                  <div style="font-weight: 500;">Surgical Dermatology</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-hospital-user"></i> In-Clinic</div>
+                </td>
+                <td>
+                  <span class="badge danger-badge" style="margin-bottom:0.3rem; display:inline-block;">Melanoma High Risk</span>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);">Dark mole changed color</div>
+                </td>
                 <td><span class="status upcoming">Upcoming</span></td>
                 <td>
                   <button class="action-btn view-btn"><i class="fa-solid fa-file-medical"></i> Details</button>
@@ -142,11 +163,21 @@
                     </div>
                   </div>
                 </td>
-                <td>2:15 PM</td>
-                <td><span class="badge safe-badge">Psoriasis Checkup</span></td>
+                <td>
+                  <div style="font-weight: 500;">Tomorrow</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">03:00 PM</div>
+                </td>
+                <td>
+                  <div style="font-weight: 500;">General Dermatology</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-video"></i> Video Call</div>
+                </td>
+                <td>
+                  <span class="badge safe-badge" style="margin-bottom:0.3rem; display:inline-block;">Dry Skin Routine</span>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);">Follow-up for prescription</div>
+                </td>
                 <td><span class="status upcoming">Upcoming</span></td>
                 <td>
-                  <button class="action-btn view-btn"><i class="fa-solid fa-file-medical"></i> Details</button>
+                  <button class="action-btn view-btn"><i class="fa-solid fa-calendar-check"></i> Manage</button>
                 </td>
               </tr>
             </tbody>
@@ -183,7 +214,7 @@
                   <span>Today, 9:24 AM</span>
                 </div>
               </div>
-              <div class="txn-amount">+$150.00</div>
+              <div class="txn-amount">+₹ 1,500.00</div>
             </li>
             <li>
               <div class="txn-info">
@@ -195,7 +226,7 @@
                   <span>Yesterday</span>
                 </div>
               </div>
-              <div class="txn-amount">+$45.00</div>
+              <div class="txn-amount">+₹ 450.00</div>
             </li>
           </ul>
         </div>
