@@ -8,7 +8,12 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// 🔥 REPLACE HERE
+// ✅ ROOT ROUTE (ADD THIS)
+app.get("/", (req, res) => {
+  res.send("DermAI Backend Running 🚀");
+});
+
+// test route
 app.get("/test-users", (req, res) => {
   console.log("Route hit");
 
