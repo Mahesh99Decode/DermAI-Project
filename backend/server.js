@@ -5,7 +5,8 @@ const db = require("./config/db");
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // 🔥 REPLACE HERE
 app.get("/test-users", (req, res) => {
@@ -19,7 +20,10 @@ app.get("/test-users", (req, res) => {
 
 // routes
 const authRoutes = require("./routes/authRoutes");
+const aiRoutes = require("./routes/aiRoutes");
+
 app.use("/api", authRoutes);
+app.use("/api", aiRoutes);
 
 // start server
 app.listen(5000, () => {
