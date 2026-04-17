@@ -145,7 +145,24 @@
 
         <!-- BOOKING SECTION -->
         <section id="bookingSection" class="content-section">
-          <div class="card booking-card">
+          
+          <!-- Live Doctors List -->
+          <div class="card booking-card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+              <div class="icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                <i class="fa-solid fa-user-doctor"></i>
+              </div>
+              <h2>Available Specialists</h2>
+              <span class="live-badge-global"><span class="pulse-dot"></span> Live Now</span>
+            </div>
+            <p class="card-subtitle">Connect instantly with verified dermatologists currently online.</p>
+            
+            <div class="doctors-grid" id="liveDoctorsList">
+              <!-- Doctor cards will be injected here via JS -->
+            </div>
+          </div>
+
+          <div class="card booking-card" id="bookingFormCard">
             <div class="card-header">
               <div class="icon-wrapper" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
                 <i class="fa-solid fa-calendar-plus"></i>
@@ -153,23 +170,33 @@
               <h2>Book Consultation</h2>
             </div>
             <p class="card-subtitle">Schedule an appointment with a certified skin specialist.</p>
-            
-            <form class="modern-form" onsubmit="event.preventDefault(); alert('Booking Confirmed successfully!');">
+
+
+            <form class="modern-form" id="bookingForm" onsubmit="handleBooking(event)">
+              <div class="form-row">
+                <div class="input-group flex-1" style="width: 100%;">
+                  <label>Selected Doctor</label>
+                  <input type="text" class="form-input" id="selectedDoctorInput" placeholder="Select a live doctor or leave empty for general booking" readonly>
+                </div>
+              </div>
+              
               <div class="form-row">
                 <div class="input-group flex-1">
                   <label>Specialist Type</label>
-                  <select class="form-input">
-                    <option>General Dermatology</option>
-                    <option>Cosmetic Dermatology</option>
-                    <option>Surgical Dermatology</option>
-                    <option>Pediatric Dermatology</option>
+                  <select class="form-input" id="specialistType" required>
+                    <option value="">Select Specialization</option>
+                    <option value="General Dermatology">General Dermatology</option>
+                    <option value="Cosmetic Dermatology">Cosmetic Dermatology</option>
+                    <option value="Surgical Dermatology">Surgical Dermatology</option>
+                    <option value="Pediatric Dermatology">Pediatric Dermatology</option>
                   </select>
                 </div>
                 <div class="input-group flex-1">
                   <label>Consultation Mode</label>
-                  <select class="form-input">
-                    <option>Video Call (Online)</option>
-                    <option>In-Clinic Visit</option>
+                  <select class="form-input" id="consultationMode" required>
+                    <option value="">Select Mode</option>
+                    <option value="Video Call (Online)">Video Call (Online)</option>
+                    <option value="In-Clinic Visit">In-Clinic Visit</option>
                   </select>
                 </div>
               </div>
@@ -177,25 +204,26 @@
               <div class="form-row">
                 <div class="input-group flex-1">
                   <label>Preferred Date</label>
-                  <input type="date" class="form-input" required>
+                  <input type="date" class="form-input" id="appointmentDate" required>
                 </div>
                 <div class="input-group flex-1">
                   <label>Time Slot</label>
-                  <select class="form-input">
-                    <option>10:00 AM - 11:00 AM</option>
-                    <option>12:00 PM - 01:00 PM</option>
-                    <option>03:00 PM - 04:00 PM</option>
-                    <option>05:00 PM - 06:00 PM</option>
+                  <select class="form-input" id="timeSlot" required>
+                    <option value="">Select Time</option>
+                    <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                    <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                    <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                    <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
                   </select>
                 </div>
               </div>
 
               <div class="input-group">
                 <label>Reason for Appointment</label>
-                <textarea class="form-input" placeholder="Briefly explain your concern or reference your AI analysis..." style="min-height: 100px;"></textarea>
+                <textarea class="form-input" id="reasonForVisit" placeholder="Briefly explain your concern or reference your AI analysis..." style="min-height: 100px;" required></textarea>
               </div>
 
-              <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+              <button type="submit" class="btn-primary" id="submitBookingBtn" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
                 <i class="fa-solid fa-calendar-check"></i> Confirm Booking
               </button>
             </form>

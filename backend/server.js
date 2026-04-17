@@ -26,9 +26,11 @@ app.get("/test-users", (req, res) => {
 // routes
 const authRoutes = require("./routes/authRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const bookingRoutes = require("./routes/bookingRoutes"); // Add routing
 
 app.use("/api", authRoutes);
 app.use("/api", aiRoutes);
+app.use("/api", bookingRoutes); // Mount booking endpoints
 
 // start server
 app.listen(5000, () => {

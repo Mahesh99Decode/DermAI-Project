@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DermAI - Analysis History</title>
+  <meta name="description" content="Review your past skin analysis reports and connect with live dermatologists on DermAI.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- History CSS -->
+  <link rel="stylesheet" href="../css/history.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo">
+        <i class="fa-solid fa-leaf"></i> DermAI
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-microscope"></i>
+          <span>Analyze</span>
+        </a>
+        <a href="dashboard.html#booking" class="nav-item">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Booking</span>
+        </a>
+        <a href="history.html" class="nav-item active">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>History</span>
+        </a>
+        <a href="dashboard.html#reports" class="nav-item">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Reports</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=0ea5e9&color=fff" alt="User Profile" class="avatar" id="avatarImg">
+          <div class="user-info">
+            <span class="user-name" id="profileNameDisplay">Jane Doe</span>
+            <span class="user-role">Patient</span>
+          </div>
+        </div>
+        <button onclick="logout()" class="logout-btn" id="logoutBtn">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <h1><i class="fa-solid fa-clock-rotate-left header-icon"></i> Analysis History</h1>
+          <p class="welcome-text" id="welcomeMessageDisplay">Your complete skin analysis timeline</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-outline-sm" id="clearHistoryBtn" onclick="clearHistory()">
+            <i class="fa-solid fa-trash"></i> Clear All
+          </button>
+          <a href="dashboard.html" class="btn-primary-sm">
+            <i class="fa-solid fa-plus"></i> New Scan
+          </a>
+        </div>
+      </header>
+
+      <!-- Stats Row -->
+      <div class="stats-row" id="statsRow">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(14,165,233,0.12); color:#0ea5e9;">
+            <i class="fa-solid fa-microscope"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="statTotal">0</span>
+            <span class="stat-label">Total Scans</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(16,185,129,0.12); color:#10b981;">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="statBenign">0</span>
+            <span class="stat-label">Benign Results</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(239,68,68,0.12); color:#ef4444;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="statHighRisk">0</span>
+            <span class="stat-label">High-Risk Flags</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(139,92,246,0.12); color:#8b5cf6;">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="statLast">—</span>
+            <span class="stat-label">Last Scan</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="content-grid">
+
+        <!-- ===== HISTORY PANEL ===== -->
+        <section class="history-panel card">
+          <div class="panel-header">
+            <div class="card-header">
+              <div class="icon-wrapper" style="background:rgba(245,158,11,0.1);color:#f59e0b;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+              </div>
+              <h2>Past Reports</h2>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="filter-bar">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Search condition..." oninput="filterHistory()">
+              </div>
+              <select class="filter-select" id="filterRisk" onchange="filterHistory()">
+                <option value="all">All Results</option>
+                <option value="high">High Risk</option>
+                <option value="normal">Normal</option>
+              </select>
+              <select class="filter-select" id="filterSort" onchange="filterHistory()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- History List -->
+          <div class="history-scroll" id="historyScroll">
+            <ul class="history-list" id="historyList">
+              <!-- Populated by JS -->
+            </ul>
+            <!-- Empty State -->
+            <div class="empty-state hidden" id="emptyState">
+              <div class="empty-icon"><i class="fa-solid fa-folder-open"></i></div>
+              <h3>No scans found</h3>
+              <p>Start by analyzing a skin image from the dashboard.</p>
+              <a href="dashboard.html" class="btn-primary-sm mt-2">
+                <i class="fa-solid fa-microscope"></i> Go Analyze
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== RIGHT COLUMN ===== -->
+        <aside class="right-column">
+
+
+          <!-- QUICK TIP CARD -->
+          <div class="card tip-card">
+            <div class="card-header">
+              <div class="icon-wrapper" style="background:rgba(59,130,246,0.1);color:#3b82f6;">
+                <i class="fa-solid fa-lightbulb"></i>
+              </div>
+              <h2>Health Tip</h2>
+            </div>
+            <div class="tip-content" id="tipContent">
+              <p id="tipText">Loading tip...</p>
+            </div>
+            <button class="btn-outline-tip" onclick="nextTip()">
+              <i class="fa-solid fa-arrow-rotate-right"></i> New Tip
+            </button>
+          </div>
+
+        </aside>
+      </div><!-- /content-grid -->
+    </main>
+  </div>
+
+  <!-- ===== REPORT DETAIL MODAL ===== -->
+  <div class="modal-overlay hidden" id="reportModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header">
+        <div class="modal-icon" id="modalIcon">
+          <i class="fa-solid fa-file-medical"></i>
+        </div>
+        <div>
+          <h2 id="modalTitle">Condition Name</h2>
+          <span class="modal-date" id="modalDate">—</span>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-stat-row">
+          <div class="modal-stat">
+            <span class="modal-stat-label">AI Confidence</span>
+            <span class="modal-stat-value" id="modalConfidence">—</span>
+          </div>
+          <div class="modal-stat">
+            <span class="modal-stat-label">Risk Level</span>
+            <span class="modal-stat-value" id="modalRisk">—</span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h4><i class="fa-solid fa-align-left"></i> Summary</h4>
+          <p id="modalSummary">—</p>
+        </div>
+        <div class="modal-section">
+          <h4><i class="fa-solid fa-receipt"></i> Recommendation</h4>
+          <p id="modalPrescription">—</p>
+        </div>
+        <div class="modal-disclaimer">
+          <i class="fa-solid fa-circle-info"></i>
+          <strong>Disclaimer:</strong> This is an AI-generated assessment. Always consult a certified dermatologist.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-modal" onclick="closeModal()">Close</button>
+        <a href="dashboard.html" class="btn-primary-modal">
+          <i class="fa-solid fa-microscope"></i> New Analysis
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/history.js"></script>
+</body>
+</html>

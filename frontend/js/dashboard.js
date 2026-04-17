@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupSidebarNavigation();
     setupImageUpload();
     initCharts();
+    initBooking();
 });
 
 // ==========================
@@ -223,6 +224,82 @@ function displayReport(prediction, confidence) {
 }
 
 // ==========================
+// Booking Handling
+// ==========================
+const DOCTOR_POOL = [
+  { id: 1, name: "Dr. Priya Sharma", spec: "General Dermatology", rating: 4.9, reviews: 312, avatar: "https://ui-avatars.com/api/?name=Priya+Sharma&background=10b981&color=fff&size=80", experience: "8 yrs" },
+  { id: 2, name: "Dr. Rohan Mehta", spec: "Cosmetic Dermatology", rating: 4.7, reviews: 189, avatar: "https://ui-avatars.com/api/?name=Rohan+Mehta&background=8b5cf6&color=fff&size=80", experience: "12 yrs" },
+  { id: 3, name: "Dr. Ananya Iyer", spec: "Surgical Dermatology", rating: 4.8, reviews: 240, avatar: "https://ui-avatars.com/api/?name=Ananya+Iyer&background=0ea5e9&color=fff&size=80", experience: "10 yrs" },
+  { id: 4, name: "Dr. Kiran Patel", spec: "Pediatric Dermatology", rating: 4.6, reviews: 97, avatar: "https://ui-avatars.com/api/?name=Kiran+Patel&background=f59e0b&color=fff&size=80", experience: "6 yrs" },
+  { id: 5, name: "Dr. Siddharth Das", spec: "Trichology & Hair", rating: 4.9, reviews: 421, avatar: "https://ui-avatars.com/api/?name=Siddharth+Das&background=ec4899&color=fff&size=80", experience: "15 yrs" },
+];
+
+let liveStatusInterval = null;
+
+function initBooking() {
+  renderLiveDoctorsList();
+  
+  // Refresh live status every 30 seconds
+  if (liveStatusInterval) clearInterval(liveStatusInterval);
+  liveStatusInterval = setInterval(renderLiveDoctorsList, 30000);
+}
+
+function renderLiveDoctorsList() {
+  const doctorsList = document.getElementById("liveDoctorsList");
+  if (!doctorsList) return;
+
+  const hour = new Date().getHours();
+  // Working hours: 9 AM - 8 PM gives higher chance
+  const inWorkHours = (hour >= 9 && hour < 21);
+
+  const liveDoctors = DOCTOR_POOL.filter(() => {
+    const prob = inWorkHours ? 0.7 : 0.3;
+    return Math.random() < prob;
+  });
+
+  doctorsList.innerHTML = "";
+  
+  if (liveDoctors.length === 0) {
+    doctorsList.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2rem;">No doctors are currently live. Please check back later or book a regular appointment below.</div>`;
+    return;
+  }
+
+  liveDoctors.forEach((doc, i) => {
+    const card = document.createElement("div");
+    card.className = "doctor-card";
+    card.style.animationDelay = `${i * 0.08}s`;
+    card.innerHTML = `
+      <img src="${doc.avatar}" alt="${doc.name}" class="doctor-avatar">
+      <div class="doctor-name">${doc.name}</div>
+      <div class="doctor-specialty">${doc.spec} · ${doc.experience}</div>
+      <span class="live-badge"><span class="pulse-dot"></span> Live Now</span>
+      <button type="button" class="btn-outline btn-sm" style="margin-top: auto; width: 100%; border: 1px solid var(--primary); padding: 0.6rem; border-radius: 8px; background: transparent; color: var(--primary); cursor: pointer; transition: all 0.3s;" onclick="selectDoctor('${doc.name}', '${doc.spec}')" onmouseover="this.style.background='var(--primary)'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='var(--primary)';">
+        Book Appointment
+      </button>
+    `;
+    doctorsList.appendChild(card);
+  });
+}
+
+function selectDoctor(name, specialty) {
+  const doctorInput = document.getElementById("selectedDoctorInput");
+  if (doctorInput) {
+    doctorInput.value = name + " - " + specialty;
+    // Highlight briefly
+    doctorInput.style.transition = "background-color 0.3s";
+    doctorInput.style.backgroundColor = "rgba(139, 92, 246, 0.2)";
+    setTimeout(() => {
+      doctorInput.style.backgroundColor = "rgba(255,255,255,0.7)";
+    }, 1000);
+  }
+  
+  const formCard = document.getElementById("bookingFormCard");
+  if(formCard) {
+    formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ==========================
 // History Handling
 // ==========================
 function addToHistory(prediction, confidence) {
@@ -302,4 +379,51 @@ function initCharts() {
       }
     });
   }
+}
+
+// ==========================
+// Booking Submission
+// ==========================
+function handleBooking(event) {
+  event.preventDefault();
+
+  const submitBtn = document.getElementById("submitBookingBtn");
+  const originalHtml = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+  submitBtn.disabled = true;
+
+  const bookingData = {
+    user_id: 1, // hardcoded user for now, in a real app grab from local auth context or JWT
+    doctor_name: document.getElementById("selectedDoctorInput").value || "General Pool",
+    specialist_type: document.getElementById("specialistType").value,
+    consultation_mode: document.getElementById("consultationMode").value,
+    appointment_date: document.getElementById("appointmentDate").value,
+    time_slot: document.getElementById("timeSlot").value,
+    reason: document.getElementById("reasonForVisit").value
+  };
+
+  fetch("http://localhost:5000/api/bookings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(bookingData)
+  })
+  .then(res => res.json())
+  .then(data => {
+    submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Confirmed!';
+    submitBtn.style.background = "#10b981";
+    
+    setTimeout(() => {
+      alert(data.message || "Booking Confirmed successfully!");
+      document.getElementById("bookingForm").reset();
+      submitBtn.innerHTML = originalHtml;
+      submitBtn.style.background = "";
+      submitBtn.disabled = false;
+    }, 1000);
+  })
+  .catch(err => {
+    console.error("Booking Error:", err);
+    alert("Failed to confirm booking. Please try again.");
+    submitBtn.innerHTML = originalHtml;
+    submitBtn.disabled = false;
+  });
 }

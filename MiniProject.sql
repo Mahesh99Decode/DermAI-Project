@@ -38,8 +38,13 @@ CREATE TABLE reports (
 CREATE TABLE bookings (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT,
-  doctor_id INT,
-  appointment_date DATETIME
+  doctor_name VARCHAR(100),
+  specialist_type VARCHAR(100),
+  consultation_mode VARCHAR(50),
+  appointment_date DATE,
+  time_slot VARCHAR(50),
+  reason TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 SELECT * FROM users;
