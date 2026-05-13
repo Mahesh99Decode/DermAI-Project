@@ -7,4 +7,3 @@ pillow
 torch
 torchvision
 gunicorn
-.env
