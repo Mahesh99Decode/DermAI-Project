@@ -21,7 +21,7 @@ venv/
 __pycache__/
 *.pyc
 .env
-*.pt
+.pt
 *.pth
 backend/node_modules/
 __pycache__/
