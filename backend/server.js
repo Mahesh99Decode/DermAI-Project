@@ -11,7 +11,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // ✅ ROOT ROUTE (ADD THIS)
 app.get("/", (req, res) => {
-  res.send("DermAI Backend Running 🚀");
+  res.send("Aura Derm Backend Running 🚀");
 });
 
 // test route
@@ -33,7 +33,9 @@ app.use("/api", authRoutes);
 app.use("/api", aiRoutes);
 app.use("/api", bookingRoutes); // Mount booking endpoints
 
+const PORT = process.env.PORT || 5000;
+
 // start server
-app.listen(5000, () => {
-  console.log("Server running on port 5000 🚀");
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT} 🚀`);
 });
