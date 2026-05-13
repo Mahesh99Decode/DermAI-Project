@@ -8,7 +8,8 @@ exports.analyzeImage = async (req, res) => {
     const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
     
     // Call the Python AI model running on port 5001
-    const pythonResponse = await fetch("http://localhost:5001/predict", {
+    // const pythonResponse = await fetch("http://localhost:5001/predict", {
+    const pythonResponse = await fetch("https://dermai-project.onrender.com/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ image_url })
@@ -57,4 +58,4 @@ exports.analyzeImage = async (req, res) => {
       message: error.message || "Analysis failed",
     });
   }
-};
+};

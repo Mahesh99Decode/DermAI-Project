@@ -23,8 +23,7 @@ function handleSignup(e) {
     alert("Password must be at least 6 characters ❌");
     return;
   }
-
-  fetch("http://localhost:5000/api/register", {
+https://dermai-project.onrender.com/api/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

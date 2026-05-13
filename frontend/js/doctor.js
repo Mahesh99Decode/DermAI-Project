@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function fetchBookings() {
-  fetch("http://localhost:5000/api/bookings")
+  fetch("https://dermai-project.onrender.com/api/bookings")
     .then(res => res.json())
     .then(data => {
       if (data.success) {
@@ -124,7 +124,7 @@ function cancelBooking(bookingId) {
     return;
   }
 
-  fetch(`http://localhost:5000/api/bookings/${bookingId}`, {
+  fetch(`https://dermai-project.onrender.com/api/bookings/${bookingId}`, {
     method: 'DELETE',
   })
     .then(res => res.json())

@@ -99,7 +99,7 @@ function logout() {
 /* ==================== HISTORY ==================== */
 function loadHistory() {
   // Try fetching from backend first, fallback to localStorage
-  fetch("http://localhost:5000/api/reports")
+  fetch("https://dermai-project.onrender.com/api/reports")
     .then(res => res.json())
     .then(data => {
       if (Array.isArray(data) && data.length > 0) {

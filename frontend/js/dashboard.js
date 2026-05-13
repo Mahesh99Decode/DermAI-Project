@@ -145,7 +145,7 @@ function analyze() {
   const imageUrl = previewImg.src;
 
   // API Call to Flask ML backend
-  fetch("http://localhost:5002/predict", {
+  fetch("https://dermai-project.onrender.com/predict", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ image_url: imageUrl })
@@ -307,7 +307,7 @@ function addToHistory(prediction, confidence) {
 }
 
 function loadHistoryFromDB() {
-  fetch("http://localhost:5000/api/reports")
+  fetch("https://dermai-project.onrender.com/api/reports")
     .then(res => res.json())
     .then(data => {
       const list = document.getElementById("historyList");
@@ -362,7 +362,7 @@ function handleBooking(event) {
     reason: document.getElementById("reasonForVisit").value
   };
 
-  fetch("http://localhost:5000/api/bookings", {
+  fetch("https://dermai-project.onrender.com/api/bookings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(bookingData)
@@ -413,7 +413,7 @@ function handleSaveReport(event) {
     image_url: document.getElementById("previewImg") ? document.getElementById("previewImg").src : ""
   };
 
-  fetch("http://localhost:5000/api/reports", {
+  fetch("https://dermai-project.onrender.com/api/reports", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(reportData)

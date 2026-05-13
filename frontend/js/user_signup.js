@@ -24,7 +24,7 @@ function handleSignup(e) {
     return;
   }
 
-  fetch("http://localhost:5000/api/register", {
+  fetch("https://dermai-project.onrender.com/api/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
