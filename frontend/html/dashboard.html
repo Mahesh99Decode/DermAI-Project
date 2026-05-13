@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Derm - Dashboard</title>
+  <!-- Google Fonts for Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Chart.js for Reports -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fa-solid fa-leaf"></i> Aura Derm
+      </div>
+      
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-target="analyzeSection">
+          <i class="fa-solid fa-microscope"></i>
+          <span>Analyze</span>
+        </button>
+        <button class="nav-item" data-target="bookingSection">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Booking</span>
+        </button>
+        <button class="nav-item" data-target="historySection">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>History</span>
+        </button>
+        <button class="nav-item" data-target="reportsSection">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Reports</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=0ea5e9&color=fff" alt="User Profile" class="avatar">
+          <div class="user-info">
+            <span class="user-name" id="profileNameDisplay">Jane Doe</span>
+            <span class="user-role">Patient</span>
+          </div>
+        </div>
+        <button onclick="logout()" class="logout-btn">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="top-header">
+        <div>
+          <h1 id="sectionTitle">Analyze</h1>
+          <p id="welcomeMessageDisplay" class="welcome-text">Explore AI-powered insights</p>
+        </div>
+      </header>
+
+      <div class="content-wrapper">
+        <!-- ANALYZE SECTION -->
+        <section id="analyzeSection" class="content-section active">
+          <div class="dashboard-grid">
+            <!-- AI Analysis Form -->
+            <div class="card analysis-card">
+              <div class="card-header">
+                <div class="icon-wrapper">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <h2>AI Dermatologist</h2>
+              </div>
+              <p class="card-subtitle">Upload a clear image of the skin condition for instant evaluation, summary, and action plan.</p>
+              
+              <div class="upload-zone" id="uploadZone">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag & drop your image here or <span>browse files</span></p>
+                <input type="file" id="imageInput" accept="image/*" class="file-input">
+              </div>
+              <div id="imagePreview" class="image-preview hidden">
+                  <img id="previewImg" src="" alt="Selected Preview">
+                  <button id="removeImageBtn" class="icon-btn" title="Remove image">
+                    <i class="fa-solid fa-times"></i>
+                  </button>
+              </div>
+
+              <div class="input-group">
+                <label for="description">Additional Context / Symptoms</label>
+                <textarea id="description" placeholder="Describe symptoms, itching, pain, or duration..."></textarea>
+              </div>
+
+              <button onclick="analyze()" class="btn-primary" id="analyzeBtn">
+                <i class="fa-solid fa-brain"></i> Generate  Assessment
+              </button>
+            </div>
+
+            <!-- AI Assessment Results (Hidden default) -->
+            <div class="card report-card hidden" id="reportSection">
+              <div class="card-header">
+                <div class="icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                  <i class="fa-solid fa-file-medical"></i>
+                </div>
+                <h2>Assessment Results</h2>
+              </div>
+              
+              <div class="report-content">
+                <div class="report-header-flex">
+                  <div>
+                    <h3 id="reportPrediction">Condition Name</h3>
+                    <p class="confidence-text">Confidence: <span id="reportConfidence" style="font-weight: 700; color: #10b981;">--%</span></p>
+                  </div>
+                  <!-- Cancer Marker -->
+                  <div id="cancerRiskBadge" class="cancer-badge hidden">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Potential Melanoma/Cancer Risk
+                  </div>
+                </div>
+
+                <div class="report-blocks">
+                  <div class="report-block">
+                    <h4><i class="fa-solid fa-align-left"></i> Condition Summary</h4>
+                    <p id="reportSummary">Summary will be generated here...</p>
+                  </div>
+                  <div class="report-block">
+                    <h4><i class="fa-solid fa-receipt"></i> Suggested Prescription / Steps</h4>
+                    <p id="reportPrescription">Actionable next steps or OTC suggestions will be listed here...</p>
+                  </div>
+                </div>
+
+                <!-- <div class="disclaimer">
+                  <i class="fa-solid fa-circle-info"></i> <strong>Disclaimer:</strong> This is an AI-generated analysis. Please verify with a certified dermatologist.
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BOOKING SECTION -->
+        <section id="bookingSection" class="content-section">
+          
+          <!-- Live Doctors List -->
+          <div class="card booking-card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+              <div class="icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                <i class="fa-solid fa-user-doctor"></i>
+              </div>
+              <h2>Available Specialists</h2>
+              <span class="live-badge-global"><span class="pulse-dot"></span> Live Now</span>
+            </div>
+            <p class="card-subtitle">Connect instantly with verified dermatologists currently online.</p>
+            
+            <div class="doctors-grid" id="liveDoctorsList">
+              <!-- Doctor cards will be injected here via JS -->
+            </div>
+          </div>
+
+          <div class="card booking-card" id="bookingFormCard">
+            <div class="card-header">
+              <div class="icon-wrapper" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                <i class="fa-solid fa-calendar-plus"></i>
+              </div>
+              <h2>Book Consultation</h2>
+            </div>
+            <p class="card-subtitle">Schedule an appointment with a certified skin specialist.</p>
+
+
+            <form class="modern-form" id="bookingForm" onsubmit="handleBooking(event)">
+              <div class="form-row">
+                <div class="input-group flex-1" style="width: 100%;">
+                  <label>Selected Doctor</label>
+                  <input type="text" class="form-input" id="selectedDoctorInput" placeholder="Select a live doctor or leave empty for general booking" readonly>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="input-group flex-1">
+                  <label>Specialist Type</label>
+                  <select class="form-input" id="specialistType" required>
+                    <option value="">Select Specialization</option>
+                    <option value="General Dermatology">General Dermatology</option>
+                    <option value="Cosmetic Dermatology">Cosmetic Dermatology</option>
+                    <option value="Surgical Dermatology">Surgical Dermatology</option>
+                    <option value="Pediatric Dermatology">Pediatric Dermatology</option>
+                  </select>
+                </div>
+                <div class="input-group flex-1">
+                  <label>Consultation Mode</label>
+                  <select class="form-input" id="consultationMode" required>
+                    <option value="">Select Mode</option>
+                    <option value="Video Call (Online)">Video Call (Online)</option>
+                    <option value="In-Clinic Visit">In-Clinic Visit</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="input-group flex-1">
+                  <label>Preferred Date</label>
+                  <input type="date" class="form-input" id="appointmentDate" required>
+                </div>
+                <div class="input-group flex-1">
+                  <label>Time Slot</label>
+                  <select class="form-input" id="timeSlot" required>
+                    <option value="">Select Time</option>
+                    <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                    <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                    <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                    <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label>Reason for Appointment</label>
+                <textarea class="form-input" id="reasonForVisit" placeholder="Briefly explain your concern or reference your AI analysis..." style="min-height: 100px;" required></textarea>
+              </div>
+
+              <button type="submit" class="btn-primary" id="submitBookingBtn" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                <i class="fa-solid fa-calendar-check"></i> Confirm Booking
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- HISTORY SECTION -->
+        <section id="historySection" class="content-section">
+          <div class="card history-card">
+            <div class="card-header">
+              <div class="icon-wrapper" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+              </div>
+              <h2>Analysis History</h2>
+            </div>
+            <p class="card-subtitle">Review your past assessments and outcomes.</p>
+            
+            <div class="history-container">
+              <ul id="historyList" class="history-list">
+                <li class="empty-state">
+                  <i class="fa-solid fa-folder-open"></i>
+                  <span>No scanning history found</span>
+                  <button class="btn-outline mt-3" onclick="document.querySelector('[data-target=\'analyzeSection\']').click()">Analyze Now</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- REPORTS SECTION -->
+        <section id="reportsSection" class="content-section">
+          <div class="dashboard-grid">
+            <div class="card" id="saveReportCard">
+              <div class="card-header">
+                <div class="icon-wrapper" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">
+                  <i class="fa-solid fa-database"></i>
+                </div>
+                <h2>Save Report</h2>
+              </div>
+              <p class="card-subtitle">Store your latest scan to the database.</p>
+              
+              <form class="modern-form" id="saveReportForm" onsubmit="handleSaveReport(event)" style="margin-top: 1rem;">
+                <div class="form-row">
+                  <div class="input-group flex-1" style="width: 100%;">
+                    <label>User Name</label>
+                    <input type="text" class="form-input" id="reportUserName" placeholder="Enter your name" required>
+                  </div>
+                </div>
+                
+                <div class="form-row">
+                  <div class="input-group flex-1">
+                    <label>Disease / Condition</label>
+                    <input type="text" class="form-input" id="reportDiseaseInput" placeholder="Analyze an image first" readonly required>
+                  </div>
+                  <div class="input-group flex-1">
+                    <label>Confidence (%)</label>
+                    <input type="text" class="form-input" id="reportConfidenceInput" placeholder="0" readonly required>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="saveReportBtn" style="background: linear-gradient(135deg, #ec4899, #be185d); width: 100%; margin-top: 1rem;">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Save to Database
+                </button>
+              </form>
+            </div>
+
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/dashboard.js?v=3.0"></script>
+</body>
+</html>

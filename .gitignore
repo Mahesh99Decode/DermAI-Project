@@ -1,0 +1,29 @@
+node_modules/
+venv/
+env/
+env_310/
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# ML models
+*.h5
+*.keras
+
+# Python cache
+.ipynb_checkpoints/
+
+# Build files
+dist/
+build/node_modules/
+venv/
+__pycache__/
+*.pyc
+.env
+*.pt
+*.pth
+backend/node_modules/
+__pycache__/
+ML_Model/env_310/
+__pycache__/
