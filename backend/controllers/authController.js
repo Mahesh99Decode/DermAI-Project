@@ -1,108 +1,79 @@
-const db = require("../config/db");
+const User = require("../models/User");
 
-// Email validation function
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-// Password validation function (min 6 chars)
 const validatePassword = (password) => {
   return password && password.length >= 6;
 };
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Validate email format
   if (!email || !validateEmail(email)) {
-    return res.json({
-      success: false,
-      message: "Invalid email format"
-    });
+    return res.json({ success: false, message: "Invalid email format" });
   }
 
-  // Validate password
   if (!password || !validatePassword(password)) {
-    return res.json({
-      success: false,
-      message: "Password must be at least 6 characters"
-    });
+    return res.json({ success: false, message: "Password must be at least 6 characters" });
   }
 
-  const sql = "SELECT * FROM users WHERE email=? AND password=?";
+  try {
+    const user = await User.findOne({ email, password }).lean();
 
-  db.query(sql, [email, password], (err, result) => {
-    if (err) return res.send(err);
-
-    if (result.length > 0) {
-      res.json({
-        success: true,
-        user: result[0]
-      });
-    } else {
-      res.json({
-        success: false,
-        message: "Invalid credentials"
-      });
+    if (user) {
+      return res.json({ success: true, user });
     }
-  });
+
+    return res.json({ success: false, message: "Invalid credentials" });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({ success: false, message: "Login failed" });
+  }
 };
 
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
   const { name, email, password, role } = req.body;
 
-  // Validate required fields
   if (!name || !email || !password) {
-    return res.json({
-      success: false,
-      message: "Name, email, and password are required"
-    });
+    return res.json({ success: false, message: "Name, email, and password are required" });
   }
 
-  // Validate email format
   if (!validateEmail(email)) {
-    return res.json({
-      success: false,
-      message: "Invalid email format"
-    });
+    return res.json({ success: false, message: "Invalid email format" });
   }
 
-  // Validate password strength
   if (!validatePassword(password)) {
-    return res.json({
-      success: false,
-      message: "Password must be at least 6 characters"
-    });
+    return res.json({ success: false, message: "Password must be at least 6 characters" });
   }
 
-  // Check if email already exists
-  const checkSql = "SELECT * FROM users WHERE email=?";
-  db.query(checkSql, [email], (err, result) => {
-    if (err) return res.send(err);
-
-    if (result.length > 0) {
-      return res.json({
-        success: false,
-        message: "Email already registered"
-      });
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.json({ success: false, message: "Email already registered" });
     }
 
-    // Insert new user
-    const insertSql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
-    db.query(insertSql, [name, email, password, role || "user"], (err, result) => {
-      if (err) return res.send(err);
-
-      res.json({
-        success: true,
-        message: "User registered successfully",
-        user: {
-          id: result.insertId,
-          name: name,
-          email: email,
-          role: role || "user"
-        }
-      });
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role: role || "user",
     });
-  });
+
+    return res.json({
+      success: true,
+      message: "User registered successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Register error:", error);
+    return res.status(500).json({ success: false, message: "Registration failed" });
+  }
 };

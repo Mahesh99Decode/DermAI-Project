@@ -1,19 +1,19 @@
 require("dotenv").config();
-const mysql = require("mysql2");
+const mongoose = require("mongoose");
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASS || "Pass@1234",
-  database: process.env.DB_NAME || "dermai_db"
-});
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/DermAI";
 
-db.connect(err => {
-  if (err) {
-    console.log("DB Error:", err);
-  } else {
-    console.log("MySQL Connected ✅");
+const connectDB = async () => {
+  try {
+    await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+    });
+    console.log(`MongoDB connected successfully ✅ (${MONGO_URI})`);
+    return mongoose.connection;
+  } catch (error) {
+    console.error("MongoDB connection failed ❌", error.message);
+    process.exit(1);
   }
-});
+};
 
-module.exports = db;
+module.exports = { mongoose, connectDB };

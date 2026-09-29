@@ -1,18 +1,15 @@
-const db = require("../config/db");
+const Report = require("../models/Report");
 
 exports.analyzeImage = async (req, res) => {
   const { user_id, image_url } = req.body;
 
   try {
-    // Dynamic import for node-fetch to avoid require issues if it's an ES module
-    const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-    
-    // Call the Python AI model running on port 5001
-    // const pythonResponse = await fetch("http://localhost:5001/predict", {
+    const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
+
     const pythonResponse = await fetch("https://dermai-project.onrender.com/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image_url })
+      body: JSON.stringify({ image_url }),
     });
 
     if (!pythonResponse.ok) {
@@ -21,7 +18,7 @@ exports.analyzeImage = async (req, res) => {
     }
 
     const aiData = await pythonResponse.json();
-    
+
     if (aiData.error) {
       throw new Error(`Model Error: ${aiData.error}`);
     }
@@ -29,31 +26,23 @@ exports.analyzeImage = async (req, res) => {
     const predictedDisease = aiData.disease;
     const confidence = aiData.confidence;
 
-    const sql = `
-      INSERT INTO reports (user_id, image_url, prediction, confidence)
-      VALUES (?, ?, ?, ?)
-    `;
+    const report = await Report.create({
+      user_id: user_id || 1,
+      image_url: image_url || "",
+      prediction: predictedDisease,
+      confidence,
+      Disease_Condition: predictedDisease,
+    });
 
-    db.query(
-      sql,
-      [user_id || 1, image_url || "", predictedDisease, confidence],
-      (err, resultDB) => {
-        if (err) {
-          console.error("Database tracking error:", err);
-          return res.status(500).json({ success: false, message: "Database Error" });
-        }
-
-        res.json({
-          success: true,
-          prediction: predictedDisease,
-          confidence: confidence,
-          report_id: resultDB.insertId,
-        });
-      }
-    );
+    return res.json({
+      success: true,
+      prediction: predictedDisease,
+      confidence,
+      report_id: report._id,
+    });
   } catch (error) {
     console.error("AI Analysis Error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message || "Analysis failed",
     });

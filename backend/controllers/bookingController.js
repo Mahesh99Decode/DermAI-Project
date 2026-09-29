@@ -1,6 +1,6 @@
-const db = require("../config/db");
+const Booking = require("../models/BookingDB");
 
-exports.createBooking = (req, res) => {
+exports.createBooking = async (req, res) => {
   const {
     user_id,
     doctor_name,
@@ -8,101 +8,88 @@ exports.createBooking = (req, res) => {
     consultation_mode,
     appointment_date,
     time_slot,
-    reason
+    reason,
   } = req.body;
 
   if (!user_id || !appointment_date || !time_slot) {
     return res.status(400).json({
       success: false,
-      message: "Please provide user_id, appointment_date, and time_slot"
+      message: "Please provide user_id, appointment_date, and time_slot",
     });
   }
 
-  const sql = `
-    INSERT INTO bookings 
-    (user_id, doctor_name, specialist_type, consultation_mode, appointment_date, time_slot, reason) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
+  try {
+    const bookingPayload = {
+      user_id: Number(user_id),
+      doctorName: doctor_name,
+      specialistType: specialist_type,
+      consultationMode: consultation_mode,
+      appointmentDate: new Date(appointment_date),
+      reason,
+    };
 
-  const values = [
-    user_id,
-    doctor_name,
-    specialist_type,
-    consultation_mode,
-    appointment_date,
-    time_slot,
-    reason
-  ];
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error("Database Insert Error:", err);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to book appointment",
-        error: err.message
-      });
+    if (time_slot.startTime || time_slot.endTime) {
+      bookingPayload.timeSlot = {
+        startTime: new Date(time_slot.startTime || appointment_date),
+        endTime: new Date(time_slot.endTime || appointment_date),
+      };
     }
 
-    res.status(201).json({
+    const booking = await Booking.create(bookingPayload);
+
+    return res.status(201).json({
       success: true,
       message: "Booking confirmed successfully!",
-      bookingId: result.insertId
+      bookingId: booking._id,
     });
-  });
+  } catch (error) {
+    console.error("Database Insert Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to book appointment",
+      error: error.message,
+    });
+  }
 };
 
-exports.getAllBookings = (req, res) => {
-  const sql = `
-    SELECT b.*, u.name as patient_name 
-    FROM bookings b
-    LEFT JOIN users u ON b.user_id = u.id
-    ORDER BY b.appointment_date ASC, b.time_slot ASC
-  `;
-  
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Database Fetch Error:", err);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to fetch bookings",
-        error: err.message
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: results
+exports.getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find().sort({ appointmentDate: 1 });
+    return res.status(200).json({ success: true, data: bookings });
+  } catch (error) {
+    console.error("Database Fetch Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch bookings",
+      error: error.message,
     });
-  });
+  }
 };
 
-exports.deleteBooking = (req, res) => {
+exports.deleteBooking = async (req, res) => {
   const bookingId = req.params.id;
 
   if (!bookingId) {
     return res.status(400).json({ success: false, message: "Booking ID required" });
   }
 
-  const sql = "DELETE FROM bookings WHERE id = ?";
-  
-  db.query(sql, [bookingId], (err, result) => {
-    if (err) {
-      console.error("Database Delete Error:", err);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to cancel booking",
-        error: err.message
-      });
-    }
+  try {
+    const deleted = await Booking.findByIdAndDelete(bookingId);
 
-    if (result.affectedRows === 0) {
+    if (!deleted) {
       return res.status(404).json({ success: false, message: "Booking not found" });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Booking cancelled successfully"
+      message: "Booking cancelled successfully",
     });
-  });
+  } catch (error) {
+    console.error("Database Delete Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to cancel booking",
+      error: error.message,
+    });
+  }
 };

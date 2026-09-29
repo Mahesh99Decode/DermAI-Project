@@ -1,11 +1,13 @@
 {
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "db:init": "node DB.js"
   },
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "mongoose": "^9.10.2",
     "mysql2": "^3.22.0",
     "node-fetch": "^2.7.0"
   }
